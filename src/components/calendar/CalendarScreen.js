@@ -10,24 +10,35 @@ import { CalendarEvent } from './CalendarEvent';
 import moment from 'moment';
 import 'moment/locale/es';
 import { CalendarModal } from './CalendarModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { uiOpenModal } from '../../actions/ui';
+import { eventClearActive, eventSetActive } from '../../actions/calendar';
+import { AddNewFav } from '../ui/AddNewFav';
+import { DeleteEventFav } from '../ui/DeleteEventFav';
 moment.locale('es');
 const localizer = momentLocalizer(moment);
 
 export const CalendarScreen = () => {
 
+   const dispatch = useDispatch();
+   const { events, activeEvent } = useSelector( state => state.calendar );
    const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month');
 
    const onDoubleClick = (e) => {
-
+      dispatch( uiOpenModal() );
    }
 
    const onSelectEvent = (e) => {
-
+      dispatch( eventSetActive(e) );
    }
 
    const onViewChange = (e) => {
       setLastView(e);
       localStorage.setItem('lastView', e);
+   }
+
+   const onSelectSlot =(e) => {
+      dispatch( eventClearActive() );
    }
 
    const eventStyleGetter = (event, start, end, isSelected) => {
@@ -41,15 +52,6 @@ export const CalendarScreen = () => {
       return { style };
    }
 
-   const events = [{
-      title: 'Cumpleaños del jefe',
-      start: moment().toDate(),
-      end: moment().add(2, 'hours').toDate(),
-      bgcolor: '#fafafa',
-      notes: 'Comprar el pastel',
-      user: { _id: '123', name: 'Carlos' }
-   }];
-
    return (
       <div className="calendar-screen">
          <Navbar />
@@ -62,9 +64,14 @@ export const CalendarScreen = () => {
             eventPropGetter={eventStyleGetter}
             onDoubleClickEvent={ onDoubleClick }
             onSelectEvent= { onSelectEvent }
+            onSelectSlot={onSelectSlot}
+            selectable={true}
             onView={ onViewChange }
             view={lastView}
             components={{ event: CalendarEvent }} />
+
+            <AddNewFav />
+            { ( activeEvent ) && <DeleteEventFav /> }
 
          <CalendarModal />
       </div>

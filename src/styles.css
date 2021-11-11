@@ -62,3 +62,18 @@ html, body {
 .react-datetime-picker__wrapper {
    border: 0px solid gray !important;
 }
+
+/* Fav Button */
+.fav {
+   border-radius: 100%;
+   bottom: 25px;
+   font-size: 30px;
+   position: fixed;
+   right: 25px;
+}
+
+.fav-danger {
+   bottom: 25px;
+   position: fixed;
+   left: 25px;
+}
